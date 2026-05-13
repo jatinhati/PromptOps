@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>PromptOps</strong> (codename: <em>DevOpsGPT</em>) is a Spring Boot + Spring AI service that delivers
+  <strong>PromptOps</strong> is a Spring Boot + Spring AI service that delivers
   a production-grade DevOps assistant with RAG, AWS tool execution, and command generation.
 </p>
 
