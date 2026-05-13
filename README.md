@@ -1,165 +1,219 @@
+# PromptOps
 
-```markdown
-# DevOpsGPT
+<p align="center">
+  <img src="assets/promptops-banner.svg" alt="PromptOps banner" width="100%" />
+</p>
 
-DevOpsGPT is a Spring Boot-based application that leverages AI to assist with DevOps, cloud computing, and software engineering tasks. It provides intelligent responses to user queries, integrates Retrieval-Augmented Generation (RAG) for context-aware answers, and supports advanced dialogue management.
+<p align="center">
+  <strong>PromptOps</strong> (codename: <em>DevOpsGPT</em>) is a Spring Boot + Spring AI service that delivers
+  a production-grade DevOps assistant with RAG, AWS tool execution, and command generation.
+</p>
 
-## Features
+<p align="center">
+  <img alt="Java 25" src="https://img.shields.io/badge/Java-25-%23F89820?logo=openjdk&logoColor=white" />
+  <img alt="Spring Boot" src="https://img.shields.io/badge/Spring%20Boot-3.3.x-6DB33F?logo=springboot&logoColor=white" />
+  <img alt="Spring AI" src="https://img.shields.io/badge/Spring%20AI-1.0.0--M6-0B5FFF?logo=spring&logoColor=white" />
+  <img alt="OpenAPI" src="https://img.shields.io/badge/OpenAPI-Swagger%20UI-85EA2D?logo=swagger&logoColor=white" />
+</p>
 
-- **Standard Chat**: AI-powered responses to user queries.
-- **Retrieval-Augmented Generation (RAG)**: Context-aware answers using relevant documents.
-- **Advanced Chat**: Stateful conversations with enhanced reasoning capabilities.
-- **Document Ingestion**: Processes and stores documents for RAG-based queries.
-- **Ping Endpoint**: Health check for the application.
+---
 
-## Technologies Used
+## Table of Contents
+- [Overview](#overview)
+- [Key Capabilities](#key-capabilities)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Install & Run](#install--run)
+  - [Configuration](#configuration)
+- [API Reference](#api-reference)
+- [RAG Knowledge Base](#rag-knowledge-base)
+- [Operations & Observability](#operations--observability)
+- [Security Notes](#security-notes)
+- [Contributing](#contributing)
+- [License](#license)
 
-- **Java**: Core programming language.
-- **Spring Boot**: Framework for building the application.
-- **Maven**: Dependency management and build tool.
-- **AWS SDK**: Integration with AWS services.
-- **Spring AI**: AI client for chat and vector store operations.
-- **SLF4J**: Logging framework.
+---
 
-## Prerequisites
+## Overview
+PromptOps provides an AI-powered DevOps assistant that can:
+- Answer DevOps and cloud questions with Retrieval-Augmented Generation (RAG)
+- Generate shell commands from natural language
+- Execute AWS operational actions (EC2, S3, CloudWatch) based on detected intent
+- Maintain conversational context per session
 
-- **Java 21**: Ensure Java 21 is installed.
-- **Maven**: Install Maven for dependency management.
-- **AWS Credentials**: Configure AWS credentials for services like EC2.
-- **IDE**: IntelliJ IDEA is recommended for development.
+The service exposes REST APIs under `/api` and ships with Swagger UI for discovery.
 
-## Installation
+---
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/pearch001/DevopsGpt.git
-   cd DevopsGpt
-   ```
+## Key Capabilities
+- **Standard Chat**: LLM-backed (currently mocked) responses for quick interactions.
+- **RAG Chat**: Pulls relevant knowledge base documents from a Chroma vector store.
+- **Advanced Chat**: Stateful conversation + intent routing to AWS tools or command generation.
+- **Command Generation**: Produces structured command + explanation output.
+- **Command Simulation**: Creates mock execution logs and stores scripts on disk.
+- **OpenAPI Docs**: Swagger UI available at `/swagger-ui.html`.
 
-2. Build the project:
-   ```bash
-   mvn clean install
-   ```
+---
 
-3. Run the application:
-   ```bash
-   mvn spring-boot:run
-   ```
+## Architecture
+<p align="center">
+  <img src="assets/promptops-architecture.svg" alt="PromptOps architecture" width="100%" />
+</p>
 
-## Configuration
+**Flow summary**
+1. Client sends chat/command requests to the REST API.
+2. The reasoning engine routes requests:
+   - RAG pipeline for general DevOps questions
+   - AWS tools for operational intents (EC2/S3/CloudWatch)
+   - Command generation for automation tasks
+3. Vector store retrieves context from documents in `src/main/resources/documents`.
+4. Responses are returned with optional source documents.
 
-### AWS SDK
-Ensure the `application.properties` file contains the correct AWS region and credentials:
-```properties
-aws.region=us-east-1
-aws.accessKeyId=your-access-key-id
-aws.secretAccessKey=your-secret-access-key
+---
+
+## Tech Stack
+- **Java 25**
+- **Spring Boot 3.3.x**
+- **Spring AI (OpenAI + Chroma)**
+- **AWS SDK v2 (EC2, S3, CloudWatch)**
+- **SpringDoc OpenAPI / Swagger UI**
+
+---
+
+## Getting Started
+
+### Prerequisites
+- **Java 25** (required by Maven compiler settings)
+- **Maven 3.9+**
+- **OpenAI API key**
+- **AWS credentials** (for AWS tool execution)
+- **Chroma DB** (vector store endpoint)
+
+### Install & Run
+```bash
+git clone https://github.com/jatinhati/PromptOps.git
+cd PromptOps
+mvn clean install
+mvn spring-boot:run
 ```
 
-### Logging
-SLF4J is used for logging. Logs are written to the console by default. You can configure logging in `application.properties`:
-```properties
-logging.level.root=INFO
-logging.file.name=devopsgpt.log
-```
+The service starts on `http://localhost:8080`.
 
-## API Endpoints
+### Configuration
+Runtime configuration is defined in `src/main/resources/application.yml`. Use environment variables to override:
 
-### Health Check
-- **GET** `/api/ping`
-    - Response: `"Pong! DevOpsGPT is running."`
+| Variable | Purpose | Example |
+| --- | --- | --- |
+| `OPENAI_API_KEY` | OpenAI API key for Spring AI | `sk-...` |
+| `AWS_REGION` | AWS region used by Spring config (standard casing) | `us-east-1` |
+| `AWS_Region` | Legacy fallback supported by `application.yml` | `us-east-1` |
+| `SPRING_AI_VECTOR_STORE_CHROMA_CLIENT_HOST` | Chroma host | `http://localhost` |
+| `SPRING_AI_VECTOR_STORE_CHROMA_CLIENT_PORT` | Chroma port | `8000` |
+
+> `application.yml` supports both `${AWS_REGION}` (preferred) and legacy `${AWS_Region}`.
+> The AWS SDK also respects the default credential provider chain (env vars, profiles, IAM roles).
+
+---
+
+## API Reference
+Base URL: `http://localhost:8080/api`
+
+### Health
+`GET /ping`
 
 ### Standard Chat
-- **POST** `/api/chat`
-    - Request Body:
-      ```json
-      {
-        "sessionId": "unique-session-id",
-        "message": "Your query here"
-      }
-      ```
-    - Response:
-      ```json
-      {
-        "reply": "AI response",
-        "sessionId": "unique-session-id"
-      }
-      ```
+`POST /chat`
+```json
+{
+  "sessionId": "demo-session",
+  "message": "Explain Kubernetes pods"
+}
+```
+Response:
+```json
+{
+  "response": "...",
+  "contextId": "demo-session"
+}
+```
 
 ### RAG Chat
-- **POST** `/api/chat/rag`
-    - Request Body:
-      ```json
-      {
-        "sessionId": "unique-session-id",
-        "message": "Your query here"
-      }
-      ```
-    - Response:
-      ```json
-      {
-        "reply": "Context-aware AI response",
-        "sessionId": "unique-session-id"
-      }
-      ```
+`POST /chat/rag`
+```json
+{
+  "sessionId": "demo-session",
+  "message": "Explain S3 bucket policies"
+}
+```
 
 ### Advanced Chat
-- **POST** `/api/chat/advanced`
-    - Request Body:
-      ```json
-      {
-        "sessionId": "unique-session-id",
-        "message": "Your query here"
-      }
-      ```
-    - Response:
-      ```json
-      {
-        "response": "Enhanced AI response",
-        "sessionId": "unique-session-id"
-      }
-      ```
-
-## Document Ingestion
-
-Documents are ingested using the `VectorStoreIngestor` service. Ensure the documents are formatted correctly and placed in the appropriate resource directory.
-
-## Troubleshooting
-
-### Common Issues
-
-#### `UnsatisfiedDependencyException`
-Ensure all required beans are correctly configured and dependencies are included in `pom.xml`.
-
-#### `ClientEndpointProvider` Error
-Verify the AWS SDK version in `pom.xml` and ensure compatibility.
-
-#### `commons-logging.jar` Conflict
-Exclude `commons-logging` from dependencies in `pom.xml`:
-```xml
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter</artifactId>
-    <exclusions>
-        <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </exclusion>
-    </exclusions>
-</dependency>
+`POST /chat/advanced`
+```json
+{
+  "sessionId": "demo-session",
+  "message": "Start EC2 instance i-1234567890abcdef0"
+}
 ```
+Response:
+```json
+{
+  "response": "✅ Action sent: EC2 instance ...",
+  "sourceDocuments": [
+    "devops-doc"
+  ]
+}
+```
+
+### Command Generation
+`POST /command/generate`
+```json
+{
+  "task": "Create a Docker image for a Node app"
+}
+```
+
+### Command Simulation
+`POST /command/simulate`
+```json
+{
+  "command": "docker build -t myapp:latest ."
+}
+```
+
+Swagger UI: `http://localhost:8080/swagger-ui.html`
+
+---
+
+## RAG Knowledge Base
+Documents in `src/main/resources/documents/*.md` are ingested at startup by `VectorStoreIngestor`.
+To add new knowledge:
+1. Add markdown files to the documents folder.
+2. Restart the application to trigger re-ingestion.
+
+---
+
+## Operations & Observability
+- **Logs**: SLF4J logging to console by default.
+- **Scripts output**: Command simulations write `scripts/*.sh` on the server.
+- **CORS**: Enabled for `/api/**` (all origins allowed by default).
+
+---
+
+## Security Notes
+- Never commit API keys. Use environment variables instead.
+- Restrict network access to your Chroma DB and OpenAI credentials.
+- Review CORS settings before production deployment.
+
+---
 
 ## Contributing
-
 1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Submit a pull request with a detailed description of your changes.
+2. Create a feature branch.
+3. Submit a pull request with a clear description of changes.
+
+---
 
 ## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for details.
-
-## Contact
-
-For questions or support, contact [pearch001](https://github.com/pearch001).
-```
+No license file is currently present in the repository. Add a `LICENSE` file to formalize usage terms.
