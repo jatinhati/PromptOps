@@ -1,0 +1,24 @@
+<svg width="1200" height="240" viewBox="0 0 1200 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PromptOps banner">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B1020"/>
+      <stop offset="100%" stop-color="#1F3B73"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#22D3EE"/>
+      <stop offset="100%" stop-color="#60A5FA"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="240" fill="url(#bg)"/>
+  <circle cx="110" cy="120" r="78" fill="rgba(34,211,238,0.12)"/>
+  <circle cx="1120" cy="60" r="48" fill="rgba(96,165,250,0.18)"/>
+  <rect x="0" y="180" width="1200" height="60" fill="rgba(255,255,255,0.06)"/>
+  <text x="140" y="120" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="54" font-weight="700" fill="#F8FAFC">PromptOps</text>
+  <rect x="140" y="135" width="250" height="6" fill="url(#accent)"/>
+  <text x="140" y="170" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="20" fill="#E2E8F0">
+    AI DevOps + Cloud Operations Assistant
+  </text>
+  <text x="140" y="205" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#94A3B8">
+    RAG • AWS Tooling • Command Generation • Observability
+  </text>
+</svg>
