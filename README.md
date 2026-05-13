@@ -107,7 +107,8 @@ Runtime configuration is defined in `src/main/resources/application.yml`. Use en
 | Variable | Purpose | Example |
 | --- | --- | --- |
 | `OPENAI_API_KEY` | OpenAI API key for Spring AI | `sk-...` |
-| `AWS_Region` | AWS region used by AWS SDK | `us-east-1` |
+| `AWS_Region` | Required Spring config placeholder for `aws.region` | `us-east-1` |
+| `AWS_REGION` | Standard AWS SDK env var (optional unless you adjust `application.yml`) | `us-east-1` |
 | `SPRING_AI_VECTOR_STORE_CHROMA_CLIENT_HOST` | Chroma host | `http://localhost` |
 | `SPRING_AI_VECTOR_STORE_CHROMA_CLIENT_PORT` | Chroma port | `8000` |
 
