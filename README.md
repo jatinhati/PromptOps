@@ -107,12 +107,12 @@ Runtime configuration is defined in `src/main/resources/application.yml`. Use en
 | Variable | Purpose | Example |
 | --- | --- | --- |
 | `OPENAI_API_KEY` | OpenAI API key for Spring AI | `sk-...` |
-| `AWS_Region` | Required by current `application.yml` placeholder (non-standard casing) | `us-east-1` |
-| `AWS_REGION` | Standard AWS SDK env var (optional unless you adjust `application.yml`) | `us-east-1` |
+| `AWS_REGION` | AWS region used by Spring config (standard casing) | `us-east-1` |
+| `AWS_Region` | Legacy fallback supported by `application.yml` | `us-east-1` |
 | `SPRING_AI_VECTOR_STORE_CHROMA_CLIENT_HOST` | Chroma host | `http://localhost` |
 | `SPRING_AI_VECTOR_STORE_CHROMA_CLIENT_PORT` | Chroma port | `8000` |
 
-> `application.yml` currently references `${AWS_Region}` (non-standard casing), so set `AWS_Region` or update the config to use `${AWS_REGION}` if you prefer standard AWS naming.
+> `application.yml` supports both `${AWS_REGION}` (preferred) and legacy `${AWS_Region}`.
 > The AWS SDK also respects the default credential provider chain (env vars, profiles, IAM roles).
 
 ---
