@@ -1,0 +1,52 @@
+# src/main/resources/application.yml
+
+server:
+  port: 8080
+
+aws:
+  region: ${AWS_Region}
+
+spring:
+  application:
+    name: DevOpsGPT
+
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: gpt-4.1-mini
+          temperature: 0.7
+
+    vector-store:
+      chroma:
+        collection-name: "devopsgpt-rag-store"
+        initialize-schema: true
+        client:
+          host: http://16.171.142.250
+          port: 8000
+
+
+
+
+
+springdoc:
+  swagger-ui:
+    # Controls the expansion depth of the schemas. -1 collapses all.
+    default-models-expand-depth: -1
+    # Path for the Swagger UI endpoint
+    path: /swagger-ui.html
+  api-docs:
+    # Path for the generated OpenAPI specification
+    path: /v3/api-docs
+  # General API metadata
+  info:
+    title: DevOpsGPT API
+    description: "API for the DevOps & Cloud AI Assistant. Provides endpoints for intelligent chat and command generation."
+    version: "1.0.0"
+    contact:
+      name: DevOpsGPT Team
+      email: api-support@devopsgpt.com
+    license:
+      name: Apache 2.0
+      url: http://www.apache.org/licenses/LICENSE-2.0.html
