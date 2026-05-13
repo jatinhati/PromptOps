@@ -112,6 +112,7 @@ Runtime configuration is defined in `src/main/resources/application.yml`. Use en
 | `SPRING_AI_VECTOR_STORE_CHROMA_CLIENT_HOST` | Chroma host | `http://localhost` |
 | `SPRING_AI_VECTOR_STORE_CHROMA_CLIENT_PORT` | Chroma port | `8000` |
 
+> `application.yml` currently references `${AWS_Region}`, so set `AWS_Region` or update the config to use `${AWS_REGION}` if you prefer standard AWS naming.
 > The AWS SDK also respects the default credential provider chain (env vars, profiles, IAM roles).
 
 ---
