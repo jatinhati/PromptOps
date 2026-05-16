@@ -16,12 +16,28 @@
   <img alt="OpenAPI" src="https://img.shields.io/badge/OpenAPI-Swagger%20UI-85EA2D?logo=swagger&logoColor=white" />
 </p>
 
+## System Architecture
+The system architecture below shows the end-to-end flow across the PromptOps service.
+
+<p align="center">
+  <img src="assets/promptops-architecture.svg" alt="PromptOps architecture" width="100%" />
+</p>
+
+**Flow summary**
+1. Client sends chat/command requests to the REST API.
+2. The reasoning engine routes requests:
+   - RAG pipeline for general DevOps questions
+   - AWS tools for operational intents (EC2/S3/CloudWatch)
+   - Command generation for automation tasks
+3. Vector store retrieves context from documents in `src/main/resources/documents`.
+4. Responses are returned with optional source documents.
+
 ---
 
 ## Table of Contents
 - [Overview](#overview)
 - [Key Capabilities](#key-capabilities)
-- [Architecture](#architecture)
+- [System Architecture](#system-architecture)
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
@@ -54,22 +70,6 @@ The service exposes REST APIs under `/api` and ships with Swagger UI for discove
 - **Command Generation**: Produces structured command + explanation output.
 - **Command Simulation**: Creates mock execution logs and stores scripts on disk.
 - **OpenAPI Docs**: Swagger UI available at `/swagger-ui.html`.
-
----
-
-## Architecture
-<p align="center">
-  <img src="assets/promptops-architecture.svg" alt="PromptOps architecture" width="100%" />
-</p>
-
-**Flow summary**
-1. Client sends chat/command requests to the REST API.
-2. The reasoning engine routes requests:
-   - RAG pipeline for general DevOps questions
-   - AWS tools for operational intents (EC2/S3/CloudWatch)
-   - Command generation for automation tasks
-3. Vector store retrieves context from documents in `src/main/resources/documents`.
-4. Responses are returned with optional source documents.
 
 ---
 
