@@ -16,8 +16,6 @@
   <img alt="OpenAPI" src="https://img.shields.io/badge/OpenAPI-Swagger%20UI-85EA2D?logo=swagger&logoColor=white" />
 </p>
 
----
-
 ## System Architecture
 The system architecture below shows the end-to-end flow across the PromptOps service.
 
